@@ -213,3 +213,592 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+// Burning Image Transition Effect
+document.addEventListener('DOMContentLoaded', function() {
+    const aboutImage = document.querySelector('.about-image');
+    const profilePics = document.querySelectorAll('.profile-pic');
+    let currentImageIndex = 0;
+    let transitionInterval;
+    let isHovering = false;
+
+    function switchToNextImage() {
+        // Remove active class from current image
+        profilePics[currentImageIndex].classList.remove('active');
+        
+        // Move to next image
+        currentImageIndex = (currentImageIndex + 1) % profilePics.length;
+        
+        // Add active class to new image
+        profilePics[currentImageIndex].classList.add('active');
+    }
+
+    function startBurningTransition() {
+        if (isHovering) return;
+        isHovering = true;
+        
+        // Start the transition interval (switch image every 1 second during hover)
+        transitionInterval = setInterval(switchToNextImage, 1000);
+    }
+
+    function stopBurningTransition() {
+        isHovering = false;
+        
+        // Clear the interval
+        if (transitionInterval) {
+            clearInterval(transitionInterval);
+            transitionInterval = null;
+        }
+        
+        // Reset to first image after a short delay
+        setTimeout(() => {
+            if (!isHovering) {
+                profilePics[currentImageIndex].classList.remove('active');
+                currentImageIndex = 0;
+                profilePics[currentImageIndex].classList.add('active');
+            }
+        }, 500);
+    }
+
+    // Add hover event listeners
+    aboutImage.addEventListener('mouseenter', startBurningTransition);
+    aboutImage.addEventListener('mouseleave', stopBurningTransition);
+});
+
+// Walking Girl Animation with Rain Effect
+document.addEventListener('DOMContentLoaded', function() {
+    // Globals for walking girl animation
+    var W = window.innerWidth, H = window.innerHeight;
+    var canvas = document.getElementById("walking-canvas");
+    
+    if (!canvas) return; // Exit if canvas doesn't exist
+    
+    var ctx = canvas.getContext("2d");
+    var dashedRain = true;
+    var rainIntensity = 1;
+    var maxRadius = 2;
+    var speed = 5;
+    var textMaxSpeed = -0.5;
+    var gravity = 0.3;
+    var airResistance = 1;
+    var particleTTL = 25;
+    var wind = 0;
+    var ticker = 0;
+    var circleArr = [];
+    var miniCircleArr = [];
+    var startDate = new Date();
+    var endDate = new Date();
+    var timeControl = 0.7;
+    var clr = 34;
+    var timeDiff = 0;
+    var background = "linear-gradient(to bottom, rgba(102, 2, 31, 0.3), rgba(17, 17, 17, 0.5))";
+    var words = [];
+    var showThoughts = false;
+
+    // Girl click event with glitch effect for hero content
+    var walkingGirl = document.getElementById("walking-girl1");
+    var heroContainer = document.querySelector(".hero-container");
+    var clickHint = document.querySelector(".click-hint p");
+    var isHeroVisible = true;
+    
+    if (walkingGirl && heroContainer) {
+        walkingGirl.addEventListener("click", function() {
+            // Set data-text attributes for glitch effect
+            const heroTitle = document.querySelector('.hero-title');
+            const heroSubtitle = document.querySelector('.hero-subtitle');
+            const heroDescription = document.querySelector('.hero-description');
+            
+            if (heroTitle) heroTitle.setAttribute('data-text', heroTitle.textContent);
+            if (heroSubtitle) heroSubtitle.setAttribute('data-text', heroSubtitle.textContent);
+            if (heroDescription) heroDescription.setAttribute('data-text', heroDescription.textContent);
+            
+            if (isHeroVisible) {
+                // Glitch out and hide hero content
+                heroContainer.classList.remove('glitch-in');
+                heroContainer.classList.add('glitch-out');
+                
+                setTimeout(() => {
+                    heroContainer.classList.add('hidden');
+                }, 1000); // Wait for animation to complete
+                
+                // Change hint text to "go back"
+                if (clickHint) {
+                    clickHint.textContent = "Click the head to go back";
+                }
+                
+                isHeroVisible = false;
+            } else {
+                // Glitch in and show hero content
+                heroContainer.classList.remove('hidden');
+                heroContainer.classList.remove('glitch-out');
+                heroContainer.classList.add('glitch-in');
+                
+                // Change hint text back to original
+                if (clickHint) {
+                    clickHint.textContent = "Click the head to see what's on her mind";
+                }
+                
+                isHeroVisible = true;
+            }
+            
+            // Toggle thoughts as well
+            showThoughts = !showThoughts;
+        });
+    }
+
+    // Responsiveness
+    window.addEventListener("resize", function() {
+        W = window.innerWidth;
+        H = window.innerHeight;
+        if (canvas) {
+            canvas.width = W;
+            canvas.height = H;
+        }
+        if (walkingGirl) {
+            walkingGirl.style.top = H - (300 - 44) + "px";
+        }
+    });
+
+    // Lightning effect
+    function lightning() {
+        clr = 125;
+    }
+
+    function drawBuilding(h, n, color) {
+        var y = H - h;
+        var w = W / n + 1;
+        var gap = w / n + 1;
+        var x = gap;
+
+        for (var v = 0; v < n; v++) {
+            var grd = ctx.createLinearGradient(x + w / 2, y, x + w / 2, y + h);
+            grd.addColorStop(0, color);
+            grd.addColorStop(1, "#111");
+
+            ctx.rect(x, y, w, h);
+            ctx.fillStyle = grd;
+            ctx.fill();
+            x += w + gap;
+        }
+    }
+
+    // Utility function
+    function getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
+
+    // Word class for thoughts
+    var Word = function(string) {
+        this.string = string.toUpperCase();
+        this.speed = Math.random() * textMaxSpeed;
+        this.size = getRandomInt(8, 16);
+        this.x = Math.random() * W;
+        this.y = getRandomInt(H / 3, H - H / 2.5);
+    }
+
+    Word.prototype.draw = function() {
+        ctx.font = this.size + "px impact";
+        ctx.fillStyle = "rgba(255, 233, 236, 0.7)";
+        ctx.fillText(this.string, this.x, this.y);
+    }
+
+    Word.prototype.update = function() {
+        this.x += this.speed;
+        if (this.x < -100) {
+            this.x = W + 100;
+        }
+        this.draw();
+    }
+
+    // Circle class for rain
+    var Circle = function(x, y, r, dx, dy) {
+        this.x = x;
+        this.y = y;
+        this.r = r;
+        this.velocity = {
+            x: dx,
+            y: dy
+        };
+    };
+
+    Circle.prototype.draw = function() {
+        ctx.beginPath();
+        if (dashedRain) {
+            ctx.moveTo(this.x, this.y);
+            ctx.lineTo(this.x + wind, this.y + getRandomInt(1, 10));
+            ctx.lineWidth = "0.5";
+            ctx.strokeStyle = "rgba(173, 216, 230, 0.6)";
+        } else {
+            ctx.arc(this.x, this.y, this.r, Math.PI * 2, false);
+            ctx.strokeStyle = "rgba(255, 233, 236, 0.5)";
+        }
+        ctx.closePath();
+        ctx.fillStyle = "rgba(173, 216, 230, 0.4)";
+        ctx.stroke();
+        ctx.fill();
+    }
+
+    Circle.prototype.update = function() {
+        if (this.x + this.r > W * 3) {
+            // Reset position
+        } else {
+            this.velocity.x += wind / 10;
+        }
+
+        if (this.y + this.r > H) {
+            this.r -= this.r;
+            this.velocity.y = -this.velocity.y * airResistance;
+            this.shatter();
+        } else {
+            this.velocity.y += gravity;
+        }
+
+        this.x += this.velocity.x;
+        this.y += this.velocity.y;
+        this.draw();
+    }
+
+    Circle.prototype.shatter = function() {
+        for (var v = 0; v < 8; v++) {
+            miniCircleArr.push(new MiniCircle(this.x, this.y, 1));
+        }
+    }
+
+    // Mini Circles for splash effect
+    var MiniCircle = function(x, y, r) {
+        Circle.call(this, x, y, r);
+        this.velocity = {
+            x: getRandomInt(-5, 5),
+            y: getRandomInt(-15, 15)
+        };
+        this.ttl = particleTTL;
+        this.opacity = 1;
+    }
+
+    MiniCircle.prototype.draw = function() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, Math.PI * 2, false);
+        ctx.closePath();
+        ctx.fillStyle = "rgba(255, 233, 236, " + this.opacity + ")";
+        ctx.fill();
+    }
+
+    MiniCircle.prototype.update = function() {
+        if (this.x - this.r < 0 || this.x + this.r > W) {
+            this.velocity.x = -this.velocity.x;
+        }
+        if (this.y - this.r < 0) {
+            this.velocity.y = -this.velocity.y;
+        }
+
+        if (this.y + this.r >= H) {
+            this.velocity.y = -this.velocity.y * airResistance;
+        } else {
+            this.velocity.y += gravity;
+        }
+
+        this.x += this.velocity.x;
+        this.y += this.velocity.y;
+        this.ttl -= 1;
+        this.opacity -= 1 / this.ttl;
+        this.draw();
+    }
+
+    // Start function
+    function start(refresh = false) {
+        if (!canvas) return;
+        
+        canvas.style.background = background;
+        canvas.width = W;
+        canvas.height = H;
+        ctx.lineWidth = "1";
+        ctx.strokeStyle = "rgba(255, 233, 236, 0.5)";
+        ctx.fillStyle = "rgba(173, 216, 230, 0.4)";
+        
+        if (walkingGirl) {
+            walkingGirl.style.top = H - (300 - 44) + "px";
+        }
+
+        circleArr = [];
+        miniCircleArr = [];
+
+        setTimeout(lightning, 4000);
+        setTimeout(lightning, 4200);
+
+        // Positive thoughts for your portfolio
+        words.push(new Word("Creative"));
+        words.push(new Word("Innovative"));
+        words.push(new Word("Passionate"));
+        words.push(new Word("Skilled"));
+        words.push(new Word("Professional"));
+        words.push(new Word("Success"));
+        words.push(new Word("Dreams"));
+        words.push(new Word("Code"));
+        words.push(new Word("Design"));
+        words.push(new Word("Future"));
+
+        if (!refresh) {
+            update();
+        }
+    }
+
+    // Update function
+    function update() {
+        if (!canvas || !ctx) return;
+        
+        requestAnimationFrame(update);
+        ctx.clearRect(0, 0, W, H);
+
+        // Removed building silhouettes - clean background
+
+        // Draw thoughts when girl is clicked
+        if (showThoughts) {
+            for (var v = 0; v < words.length; v++) {
+                words[v].update();
+            }
+        }
+
+        // Update rain drops
+        for (var v = 0; v < circleArr.length; v++) {
+            if (circleArr[v] && circleArr[v].r >= 0) {
+                circleArr[v].update();
+                if (circleArr[v].r == 0) {
+                    circleArr.splice(v, 1);
+                }
+            }
+        }
+
+        // Update mini circles (splash effect)
+        for (var v = 0; v < miniCircleArr.length; v++) {
+            if (miniCircleArr[v] !== undefined) {
+                miniCircleArr[v].update();
+                if (miniCircleArr[v].ttl == 0) {
+                    miniCircleArr.splice(v, 1);
+                }
+            }
+        }
+
+        // Spawn new rain drops
+        for (var v = 0; v < rainIntensity; v++) {
+            var r = Math.random() * maxRadius;
+            var x = Math.random() * (W * 3) - 30;
+            var y = 0;
+            var dx = wind;
+            var dy = (Math.random() - 0.5) * speed;
+            circleArr.push(new Circle(x, y, r, dx, dy));
+        }
+
+        // Wind control
+        endDate = new Date();
+        timeDiff = (endDate - startDate) / 1000;
+        if (timeDiff > timeControl) {
+            if (wind >= -6 && wind <= 6) {
+                wind += (Math.random() - 0.5) * 2;
+            }
+            
+            if (wind < -3) {
+                timeControl = 0.5;
+                rainIntensity = 3;
+            } else if (wind >= -3 && wind < -1) {
+                timeControl = 0.1;
+                rainIntensity = 1;
+            } else {
+                timeControl = 4;
+                rainIntensity = 6;
+            }
+
+            startDate = endDate;
+        }
+
+        // Lightning effect
+        if (clr > 51) {
+            canvas.style.background = "linear-gradient(to bottom, rgba(" + clr + "," + clr + "," + clr + ", 0.3), rgba(17, 17, 17, 0.5))";
+            clr -= 2;
+        } else {
+            canvas.style.background = background;
+        }
+    }
+
+    // Initialize the animation
+    start();
+});
+
+// Skills Carousel Functionality
+document.addEventListener("DOMContentLoaded", () => {
+    const track = document.querySelector(".carousel-track");
+    const cards = document.querySelectorAll(".deconstructed-card");
+    const prevBtn = document.querySelector(".carousel-button.prev");
+    const nextBtn = document.querySelector(".carousel-button.next");
+    const dotsContainer = document.querySelector(".dots-container");
+
+    if (!track || !cards.length) return;
+
+    // Create dots
+    cards.forEach((_, index) => {
+        const dot = document.createElement("div");
+        dot.classList.add("dot");
+        if (index === 0) dot.classList.add("active");
+        dot.addEventListener("click", () => goToCard(index));
+        dotsContainer.appendChild(dot);
+    });
+
+    const dots = document.querySelectorAll(".dot");
+
+    const cardWidth = cards[0].offsetWidth;
+    const cardMargin = 40;
+    const totalCardWidth = cardWidth + cardMargin;
+
+    let currentIndex = 0;
+
+    // Add mouse interaction effects
+    cards.forEach((card) => {
+        card.addEventListener("mousemove", (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width;
+            const y = (e.clientY - rect.top) / rect.height;
+            const xDeg = (y - 0.5) * 8;
+            const yDeg = (x - 0.5) * -8;
+            card.style.transform = `perspective(1200px) rotateX(${xDeg}deg) rotateY(${yDeg}deg)`;
+            
+            const layers = card.querySelectorAll(".card-layer");
+            layers.forEach((layer, index) => {
+                const depth = 30 * (index + 1);
+                const translateZ = depth;
+                const offsetX = (x - 0.5) * 10 * (index + 1);
+                const offsetY = (y - 0.5) * 10 * (index + 1);
+                layer.style.transform = `translate3d(${offsetX}px, ${offsetY}px, ${translateZ}px)`;
+            });
+            
+            const waveSvg = card.querySelector(".wave-svg");
+            if (waveSvg) {
+                const moveX = (x - 0.5) * -20;
+                const moveY = (y - 0.5) * -20;
+                waveSvg.style.transform = `translate(${moveX}px, ${moveY}px) scale(1.05)`;
+                const wavePaths = waveSvg.querySelectorAll("path:not(:first-child)");
+                wavePaths.forEach((path, index) => {
+                    const factor = 1 + index * 0.5;
+                    const waveX = moveX * factor * 0.5;
+                    const waveY = moveY * factor * 0.3;
+                    path.style.transform = `translate(${waveX}px, ${waveY}px)`;
+                });
+            }
+            
+            const bgObjects = card.querySelectorAll(".bg-object");
+            bgObjects.forEach((obj, index) => {
+                const factorX = (index + 1) * 10;
+                const factorY = (index + 1) * 8;
+                const moveX = (x - 0.5) * factorX;
+                const moveY = (y - 0.5) * factorY;
+                if (obj.classList.contains("square")) {
+                    obj.style.transform = `rotate(45deg) translate(${moveX}px, ${moveY}px)`;
+                } else if (obj.classList.contains("triangle")) {
+                    obj.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px)) scale(1)`;
+                } else {
+                    obj.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                }
+            });
+        });
+
+        card.addEventListener("mouseleave", () => {
+            card.style.transform = "";
+            const layers = card.querySelectorAll(".card-layer");
+            layers.forEach((layer) => {
+                layer.style.transform = "";
+            });
+            const waveSvg = card.querySelector(".wave-svg");
+            if (waveSvg) {
+                waveSvg.style.transform = "";
+                const wavePaths = waveSvg.querySelectorAll("path:not(:first-child)");
+                wavePaths.forEach((path) => {
+                    path.style.transform = "";
+                });
+            }
+            const bgObjects = card.querySelectorAll(".bg-object");
+            bgObjects.forEach((obj) => {
+                if (obj.classList.contains("square")) {
+                    obj.style.transform = "rotate(45deg) translateY(-20px)";
+                } else if (obj.classList.contains("triangle")) {
+                    obj.style.transform = "translate(-50%, -50%) scale(0.5)";
+                } else {
+                    obj.style.transform = "translateY(20px)";
+                }
+            });
+        });
+    });
+
+    function goToCard(index) {
+        index = Math.max(0, Math.min(index, cards.length - 1));
+        currentIndex = index;
+        updateCarousel();
+    }
+
+    function updateCarousel() {
+        const translateX = -currentIndex * totalCardWidth;
+        track.style.transform = `translateX(${translateX}px)`;
+
+        dots.forEach((dot, index) => {
+            dot.classList.toggle("active", index === currentIndex);
+        });
+    }
+
+    if (prevBtn) {
+        prevBtn.addEventListener("click", () => {
+            goToCard(currentIndex - 1);
+        });
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener("click", () => {
+            goToCard(currentIndex + 1);
+        });
+    }
+
+    // Keyboard navigation
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowLeft") {
+            goToCard(currentIndex - 1);
+        } else if (e.key === "ArrowRight") {
+            goToCard(currentIndex + 1);
+        }
+    });
+
+    // Touch/swipe navigation
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    track.addEventListener("touchstart", (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    });
+
+    track.addEventListener("touchend", (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    });
+
+    function handleSwipe() {
+        if (touchStartX - touchEndX > 50) {
+            goToCard(currentIndex + 1);
+        } else if (touchEndX - touchStartX > 50) {
+            goToCard(currentIndex - 1);
+        }
+    }
+
+    // Handle window resize
+    window.addEventListener("resize", () => {
+        const newCardWidth = cards[0].offsetWidth;
+        const newTotalCardWidth = newCardWidth + cardMargin;
+
+        const translateX = -currentIndex * newTotalCardWidth;
+        track.style.transition = "none";
+        track.style.transform = `translateX(${translateX}px)`;
+
+        setTimeout(() => {
+            track.style.transition = "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)";
+        }, 50);
+    });
+
+    // Initialize carousel
+    updateCarousel();
+});
