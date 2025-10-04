@@ -29,33 +29,185 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Contact form handling
+// Contact form handling with EmailJS
 const contactForm = document.getElementById('contact-form');
-contactForm.addEventListener('submit', function(e) {
-    e.preventDefault();
+if (contactForm) {
+    contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Simple form validation
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const message = document.getElementById("message").value;
+        
+        if (!name || !email || !message) {
+            showErrorPopup('Please fill in all fields.');
+            return;
+        }
+        
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            showErrorPopup('Please enter a valid email address.');
+            return;
+        }
+        
+        // Show loading state
+        const submitBtn = contactForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Sending...';
+        submitBtn.disabled = true;
+        
+        // Send email using EmailJS with your preferred format
+        emailjs.send("service_30z26kq", "template_k1yzymm", {
+            from_name: document.getElementById("name").value,
+            from_email: document.getElementById("email").value,
+            message: document.getElementById("message").value
+        }).then(function(response) {
+            console.log('Email sent successfully!', response.status, response.text);
+            showSuccessPopup();
+            contactForm.reset();
+        }, function(error) {
+            console.log('Failed to send email:', error);
+            showErrorPopup('Failed to send message. Please try again.');
+        }).finally(function() {
+            // Reset button
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        });
+    });
+}
+
+// Popup functions
+function showSuccessPopup() {
+    const popup = document.getElementById('success-popup');
+    popup.classList.add('show');
+}
+
+function showErrorPopup(message) {
+    const popup = document.getElementById('error-popup');
+    const messageElement = popup.querySelector('p');
+    if (message) {
+        messageElement.textContent = message;
+    }
+    popup.classList.add('show');
+}
+
+// Popup close handlers
+document.addEventListener('DOMContentLoaded', () => {
+    const successPopup = document.getElementById('success-popup');
+    const errorPopup = document.getElementById('error-popup');
+    const successCloseBtn = document.getElementById('popup-close');
+    const errorCloseBtn = document.getElementById('error-popup-close');
     
-    // Get form data
-    const formData = new FormData(contactForm);
-    const name = formData.get('name');
-    const email = formData.get('email');
-    const message = formData.get('message');
-    
-    // Simple form validation
-    if (!name || !email || !message) {
-        alert('Please fill in all fields.');
-        return;
+    if (successCloseBtn) {
+        successCloseBtn.addEventListener('click', () => {
+            successPopup.classList.remove('show');
+        });
     }
     
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        alert('Please enter a valid email address.');
-        return;
+    if (errorCloseBtn) {
+        errorCloseBtn.addEventListener('click', () => {
+            errorPopup.classList.remove('show');
+        });
     }
     
-    // Simulate form submission (replace with actual form handling)
-    alert('Thank you for your message! I\'ll get back to you soon.');
-    contactForm.reset();
+    // Close popup when clicking overlay
+    if (successPopup) {
+        successPopup.addEventListener('click', (e) => {
+            if (e.target === successPopup) {
+                successPopup.classList.remove('show');
+            }
+        });
+    }
+    
+    if (errorPopup) {
+        errorPopup.addEventListener('click', (e) => {
+            if (e.target === errorPopup) {
+                errorPopup.classList.remove('show');
+            }
+        });
+    }
+});
+
+// About Section Slideshow
+document.addEventListener('DOMContentLoaded', function() {
+    const slides = document.querySelectorAll('.slide');
+    const indicators = document.querySelectorAll('.indicator');
+    const prevBtn = document.querySelector('.prev-slide');
+    const nextBtn = document.querySelector('.next-slide');
+    let currentSlide = 0;
+    let slideInterval;
+
+    function showSlide(index) {
+        slides.forEach(slide => slide.classList.remove('active'));
+        indicators.forEach(indicator => indicator.classList.remove('active'));
+        
+        if (index >= slides.length) {
+            currentSlide = 0;
+        } else if (index < 0) {
+            currentSlide = slides.length - 1;
+        } else {
+            currentSlide = index;
+        }
+        
+        slides[currentSlide].classList.add('active');
+        indicators[currentSlide].classList.add('active');
+    }
+
+    function nextSlide() {
+        showSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+        showSlide(currentSlide - 1);
+    }
+
+    // Auto-play slideshow
+    function startSlideshow() {
+        slideInterval = setInterval(nextSlide, 5000);
+    }
+
+    function stopSlideshow() {
+        clearInterval(slideInterval);
+    }
+
+    // Event listeners
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            nextSlide();
+            stopSlideshow();
+            startSlideshow();
+        });
+    }
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            prevSlide();
+            stopSlideshow();
+            startSlideshow();
+        });
+    }
+
+    indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', () => {
+            showSlide(index);
+            stopSlideshow();
+            startSlideshow();
+        });
+    });
+
+    // Start auto-play
+    if (slides.length > 0) {
+        startSlideshow();
+    }
+
+    // Pause on hover
+    const slideshowWrapper = document.querySelector('.slideshow-wrapper');
+    if (slideshowWrapper) {
+        slideshowWrapper.addEventListener('mouseenter', stopSlideshow);
+        slideshowWrapper.addEventListener('mouseleave', startSlideshow);
+    }
 });
 
 // Header background on scroll
@@ -187,82 +339,6 @@ document.addEventListener('DOMContentLoaded', () => {
             tag.style.transform = 'scale(1) rotate(0deg)';
         });
     });
-});
-
-// Project cards tilt effect
-document.addEventListener('DOMContentLoaded', () => {
-    const projectCards = document.querySelectorAll('.project-card');
-    
-    projectCards.forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            
-            const rotateX = (y - centerY) / 10;
-            const rotateY = (centerX - x) / 10;
-            
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
-        });
-        
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
-        });
-    });
-});
-
-// Burning Image Transition Effect
-document.addEventListener('DOMContentLoaded', function() {
-    const aboutImage = document.querySelector('.about-image');
-    const profilePics = document.querySelectorAll('.profile-pic');
-    let currentImageIndex = 0;
-    let transitionInterval;
-    let isHovering = false;
-
-    function switchToNextImage() {
-        // Remove active class from current image
-        profilePics[currentImageIndex].classList.remove('active');
-        
-        // Move to next image
-        currentImageIndex = (currentImageIndex + 1) % profilePics.length;
-        
-        // Add active class to new image
-        profilePics[currentImageIndex].classList.add('active');
-    }
-
-    function startBurningTransition() {
-        if (isHovering) return;
-        isHovering = true;
-        
-        // Start the transition interval (switch image every 1 second during hover)
-        transitionInterval = setInterval(switchToNextImage, 1000);
-    }
-
-    function stopBurningTransition() {
-        isHovering = false;
-        
-        // Clear the interval
-        if (transitionInterval) {
-            clearInterval(transitionInterval);
-            transitionInterval = null;
-        }
-        
-        // Reset to first image after a short delay
-        setTimeout(() => {
-            if (!isHovering) {
-                profilePics[currentImageIndex].classList.remove('active');
-                currentImageIndex = 0;
-                profilePics[currentImageIndex].classList.add('active');
-            }
-        }, 500);
-    }
-
-    // Add hover event listeners
-    aboutImage.addEventListener('mouseenter', startBurningTransition);
-    aboutImage.addEventListener('mouseleave', stopBurningTransition);
 });
 
 // Walking Girl Animation with Rain Effect
@@ -800,5 +876,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Initialize carousel
+updateCarousel();
     updateCarousel();
 });

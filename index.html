@@ -6,6 +6,12 @@
     <title>Arnie Dela Victoria</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function(){
+            emailjs.init("2IbbVq0kJ7PuBbfoH");
+        })();
+    </script>
 </head>
 <body>
     <header class="header">
@@ -42,7 +48,7 @@
                             </div>
                         </a>
                     </li>
-                      <li class="nav-item">
+                    <li class="nav-item">
                         <a href="#skills" class="nav-link">
                             <img src="images/cloud.svg" alt="Cloud" class="cloud-svg">
                             <span class="nav-text">SKILLS</span>
@@ -57,7 +63,7 @@
                             </div>
                         </a>
                     </li>
-                      <li class="nav-item">
+                    <li class="nav-item">
                         <a href="#projects" class="nav-link">
                             <img src="images/cloud.svg" alt="Cloud" class="cloud-svg">
                             <span class="nav-text">PROJECTS</span>
@@ -96,71 +102,107 @@
             </div>
         </nav>
     </header>
-
-
     <main>
-        <section id="home" class="hero">
-            <!-- Walking girl animation container -->
-            <div id="walking-container">
-                <canvas id="walking-canvas"></canvas>
-                <div class="walking-girl" id="walking-girl1">
-                    <div class="girl-head"></div>
-                    <div class="girl-body"></div>
-                    <div class="girl-feet">
-                        <div class="girl-foot"></div>
-                        <div class="girl-foot"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="hero-container">
-                <div class="hero-content">
-                    <h1 class="hero-title">Hello, I'm <span class="highlight">Arnie Dela Victoria</span></h1>
-                    <p class="hero-subtitle">Web Developer & Designer</p>
-                    <p class="hero-description">
-                        I create beautiful and functional websites that help businesses grow and succeed online.
-                    </p>
-                    <div class="hero-buttons">
-                        <a href="#projects" class="btn btn-primary">View My Work</a>
-                        <a href="#contact" class="btn btn-secondary">Get In Touch</a>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="click-hint">
-                <p>Click the head to see what's on her mind</p>
-            </div>
-        </section>
+	<section id="home" class="hero">
+		<!-- Walking girl animation container -->
+		<div id="walking-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;">
+			<canvas id="walking-canvas" style="width: 100%; height: 100%;"></canvas>
+			<div class="walking-girl" id="walking-girl1">
+				<div class="girl-head"></div>
+				<div class="girl-body"></div>
+				<div class="girl-feet">
+					<div class="girl-foot"></div>
+					<div class="girl-foot"></div>
+				</div>
+			</div>
+		</div>
 
-        <section id="about" class="about">
-            <div class="container">
-                <div class="about-content">
-                    <div class="about-text">
-                        <h2 class="section-title">About Me</h2>
-                        <p>
-                            I'm a passionate web developer with experience in creating modern, responsive websites. 
-                            I love working with the latest technologies and always strive to deliver high-quality solutions.
-                        </p>
-                        <p>
-                            My expertise includes HTML, CSS, JavaScript, and various frameworks. I'm always learning 
-                            and staying up-to-date with the latest web development trends.
-                        </p>
-                    </div>
-                    <div class="about-image">
-                        <div class="image-container">
-                            <img src="images/mypic.svg" alt="Arnie Dela Victoria" class="profile-pic active" data-image="1">
-                            <img src="images/mypic2.svg" alt="Arnie Dela Victoria" class="profile-pic" data-image="2">
-                            <img src="images/mypic3.svg" alt="Arnie Dela Victoria" class="profile-pic" data-image="3">
-                            <img src="images/mypic4.svg" alt="Arnie Dela Victoria" class="profile-pic" data-image="4">
-                            <img src="images/mypic5.svg" alt="Arnie Dela Victoria" class="profile-pic" data-image="5">
-                            <img src="images/mypic6.svg" alt="Arnie Dela Victoria" class="profile-pic" data-image="6">
-                            <img src="images/mypic7.svg" alt="Arnie Dela Victoria" class="profile-pic" data-image="7">
+		<div class="hero-container">
+			<div class="hero-content">
+				<h1 class="hero-title">Hello, I'm <span class="highlight">Arnie Dela Victoria</span></h1>
+				<p class="hero-subtitle">Web Developer & Designer</p>
+				<p class="hero-description">
+					I create beautiful and functional websites that help businesses grow and succeed online.
+				</p>
+				<div class="hero-buttons">
+					<a href="#projects" class="btn btn-primary">View My Work</a>
+					<a href="#contact" class="btn btn-secondary">Get In Touch</a>
+				</div>
+			</div>
+		</div>
+		
+		<div class="click-hint">
+            <p>Click the head to see what's on her mind</p>
+        </div>
+	</section>
+		<section id="about" class="about">
+            <div class="about-container">
+                <div class="about-slideshow">
+                    <div class="slideshow-wrapper">
+                        <div class="slide active">
+                            <img src="images/IMG_1083.JPG" alt="About me 1">
+                        </div>
+                        <div class="slide">
+                            <img src="images/IMG_1086.JPG" alt="About me 2">
+                        </div>
+                        <div class="slide">
+                            <img src="images/IMG_1088.JPG" alt="About me 3">
+                        </div>
+                        <div class="slide">
+                            <img src="images/IMG_1089.JPG" alt="About me 4">
+                        </div>
+                        <div class="slideshow-controls">
+                            <button class="slide-btn prev-slide">‹</button>
+                            <button class="slide-btn next-slide">›</button>
+                        </div>
+                        <div class="slide-indicators">
+                            <span class="indicator active" data-slide="0"></span>
+                            <span class="indicator" data-slide="1"></span>
+                            <span class="indicator" data-slide="2"></span>
+                            <span class="indicator" data-slide="3"></span>
                         </div>
                     </div>
                 </div>
+                <div class="about-text-content">
+                    <h2 class="about-heading">About <span class="highlight">Me</span></h2>
+                    <p class="about-intro">
+                        Hello! I'm <strong>Arnie Dela Victoria</strong>, a passionate web developer and designer 
+                        dedicated to creating beautiful, functional, and user-friendly digital experiences.
+                    </p>
+                    <p class="about-description">
+                        As a fresh graduate with a Bachelor of Science in Information Technology, I have successfully completed 486 hours of internship at the Cavite City Hall, where I gained hands-on experience in IT support and client data management. 
+                        Beyond my academic training, I enjoy graphic design using Figma as a hobby, where I explore creativity and design principles. 
+                        I also dedicate time to learning and experimenting with multiple programming languages and IDEs, continuously expanding my skills and passion for technology.
+                    </p>
+                    <div class="about-highlights">
+                        <div class="highlight-item">
+                            <div class="highlight-icon">🎓</div>
+                            <h3>Education</h3>
+                            <p>Bachelor's Degree in Information Technology</p>
+                        </div>
+                        <div class="highlight-item">
+                            <div class="highlight-icon">💼</div>
+                            <h3>Experience</h3>
+                            <p>486 Hours Internship at Cavite City Hall</p>
+                        </div>
+                        <div class="highlight-item">
+                            <div class="highlight-icon">🏆</div>
+                            <h3>Projects</h3>
+                            <p>5 Projects on GitHub</p>
+                        </div>
+                    </div>
+                    <p class="about-mission">
+                        I believe in continuous learning and staying up-to-date with the latest industry trends. 
+                        When I'm not coding, you can find me exploring new design patterns, contributing to 
+                        open-source projects, or sharing knowledge with the developer community.
+                    </p>
+                    <div class="about-cta-buttons">
+                        <a href="images/CV_DelaVictoria.pdf" download="CV_DelaVictoria.pdf" class="btn btn-primary">Download my CV</a>
+                        <a href="#projects" class="btn btn-secondary">View My Projects</a>
+                    </div>
+                </div>
             </div>
         </section>
-
         <section id="skills" class="skills-section">
             <div class="skills-content">
                 <h2 class="section-title">My Skills</h2>
@@ -177,9 +219,9 @@
                                     <div class="grid-line vertical" style="left: 66.66%"></div>
                                 </div>
                                 <div class="bg-objects">
-                                    <div class="bg-object ps-triangle"></div>
-                                    <div class="bg-object ps-circle"></div>
-                                    <div class="bg-object ps-square"></div>
+                                    <div class="bg-object circle" style="bottom: 20%; left: 10%;"></div>
+                                    <div class="bg-object ps-x" style="top: 15%; right: 20%;"></div>
+                                    <div class="bg-object triangle" style="top: 60%; left: 70%;"></div>
                                 </div>
                             </div>
                             <div class="card-layer card-frame">
@@ -188,16 +230,22 @@
                                 </svg>
                             </div>
                             <div class="card-layer card-content frontend-content">
-                                <div class="content-fragment fragment-meta text-align-right">
-                                    <span class="meta-text">DEVELOPMENT</span>
+                                <div class="content-fragment fragment-meta">
                                     <div class="meta-line"></div>
+                                    <span class="meta-text">DEVELOPMENT</span>
                                 </div>
                                 <div class="content-fragment fragment-heading">
-                                    <h2 class="content-text align-right">FRONTEND</h2>
-                                    <h3 class="content-subtext align-right">USER INTERFACE DESIGN</h3>
+                                    <h2 class="content-text">FRONTEND</h2>
+                                    <h3 class="content-subtext">USER INTERFACE DESIGN</h3>
                                 </div>
-                                <div class="content-fragment fragment-body text-align-right">
+                                <div class="content-fragment fragment-body">
                                     <p class="content-text">HTML5, CSS3, JavaScript, React, Vue.js, Sass, Bootstrap, Tailwind CSS</p>
+                                </div>
+                                <div class="content-fragment fragment-cta">
+                                    <a href="#projects" class="cta-link">
+                                        <div class="cta-box"></div>
+                                        <span class="cta-text">VIEW PROJECTS</span>
+                                    </a>
                                 </div>
                             </div>
                         </article>
@@ -213,9 +261,9 @@
                                     <div class="grid-line vertical" style="left: 66.66%"></div>
                                 </div>
                                 <div class="bg-objects">
-                                    <div class="bg-object ps-x"></div>
-                                    <div class="bg-object ps-triangle"></div>
-                                    <div class="bg-object ps-circle"></div>
+                                    <div class="bg-object square" style="top: 25%; left: 15%;"></div>
+                                    <div class="bg-object triangle" style="bottom: 30%; right: 15%;"></div>
+                                    <div class="bg-object circle" style="top: 10%; right: 30%;"></div>
                                 </div>
                             </div>
                             <div class="card-layer card-frame">
@@ -224,16 +272,22 @@
                                 </svg>
                             </div>
                             <div class="card-layer card-content backend-content">
-                                <div class="content-fragment fragment-heading">
-                                    <h2 class="content-text">BACKEND</h2>
-                                    <h3 class="content-subtext">SERVER & DATABASE</h3>
-                                </div>
-                                <div class="content-fragment fragment-meta">
+                                <div class="content-fragment fragment-meta text-align-right">
+                                    <span class="meta-text">SERVER & DATABASE</span>
                                     <div class="meta-line"></div>
-                                    <span class="meta-text">DEVELOPMENT</span>
                                 </div>
-                                <div class="content-fragment fragment-body">
+                                <div class="content-fragment fragment-heading">
+                                    <h2 class="content-text align-right">BACKEND</h2>
+                                    <h3 class="content-subtext align-right">DEVELOPMENT</h3>
+                                </div>
+                                <div class="content-fragment fragment-body text-align-right">
                                     <p class="content-text">Node.js, Express.js, PHP, Python, MongoDB, MySQL, Firebase</p>
+                                </div>
+                                <div class="content-fragment fragment-cta text-align-right">
+                                    <a href="#projects" class="cta-link">
+                                        <div class="cta-box"></div>
+                                        <span class="cta-text">VIEW PROJECTS</span>
+                                    </a>
                                 </div>
                             </div>
                         </article>
@@ -249,9 +303,9 @@
                                     <div class="grid-line vertical" style="left: 66.66%"></div>
                                 </div>
                                 <div class="bg-objects">
-                                    <div class="bg-object ps-square"></div>
-                                    <div class="bg-object ps-x"></div>
-                                    <div class="bg-object ps-circle"></div>
+                                    <div class="bg-object ps-x" style="bottom: 25%; left: 20%;"></div>
+                                    <div class="bg-object square" style="top: 30%; right: 25%;"></div>
+                                    <div class="bg-object circle" style="bottom: 10%; right: 10%;"></div>
                                 </div>
                             </div>
                             <div class="card-layer card-frame">
@@ -271,85 +325,99 @@
                                 <div class="content-fragment fragment-body">
                                     <p class="content-text">Git, GitHub, VS Code, Figma, Photoshop, Webpack, NPM, React Native</p>
                                 </div>
+                                <div class="content-fragment fragment-cta">
+                                    <a href="#contact" class="cta-link">
+                                        <div class="cta-box"></div>
+                                        <span class="cta-text">GET IN TOUCH</span>
+                                    </a>
+                                </div>
                             </div>
                         </article>
+                    </div>
+
+                    <div class="carousel-controls">
+                        <button class="carousel-button prev">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                        </button>
+                        <button class="carousel-button next">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </button>
                     </div>
 
                     <div class="dots-container"></div>
                 </div>
             </div>
         </section>
-
         <section id="projects" class="projects">
             <div class="container">
                 <h2 class="section-title">My Projects</h2>
                 <div class="projects-grid">
                     <div class="project-card">
                         <div class="project-image">
-                            <div class="project-placeholder">Project 1</div>
+                            <img src="images/project1.gif" alt="Project 1" class="project-gif">
                         </div>
                         <div class="project-content">
-                            <h3 class="project-title">Portfolio Website</h3>
+                            <h3 class="project-title">E-Commerce UI/UX</h3>
                             <p class="project-description">
-                                A responsive portfolio website built with HTML, CSS, and JavaScript.
+                                 A modern e-commerce user interface and user experience design created with Figma.
                             </p>
                             <div class="project-tags">
-                                <span class="project-tag">HTML</span>
-                                <span class="project-tag">CSS</span>
-                                <span class="project-tag">JavaScript</span>
+                                <span class="project-tag">Figma</span>
+                                <span class="project-tag">UI/UX</span>
+                                <span class="project-tag">Design</span>
                             </div>
                             <div class="project-links">
-                                <a href="#" class="project-link">View Live</a>
-                                <a href="#" class="project-link">View Code</a>
+                                <a href="https://www.figma.com/proto/rXsQlhdzL9dwVPtbObrhWc/AniBoa-Store-UI?node-id=0-1&t=QCZ3WS77nJMJGPNR-1" target="_blank" class="project-link">View Design</a>
                             </div>
                         </div>
                     </div>
-
                     <div class="project-card">
                         <div class="project-image">
-                            <div class="project-placeholder">Project 2</div>
+                            <img src="images/project2.gif" alt="Project 2" class="project-gif">
                         </div>
                         <div class="project-content">
-                            <h3 class="project-title">E-commerce Site</h3>
+                            <h3 class="project-title">Adventure of Shan in the Whimperworld</h3>
                             <p class="project-description">
-                                A modern e-commerce website with shopping cart functionality.
-                            </p>
+                                A 2D mobile adventure game for kids developed in Unity as part of a thesis project.</p>
                             <div class="project-tags">
-                                <span class="project-tag">React</span>
-                                <span class="project-tag">Node.js</span>
-                                <span class="project-tag">MongoDB</span>
+                                <span class="project-tag">Unity</span>
+                                <span class="project-tag">Game Development</span>
+                                <span class="project-tag">2D</span>
+                                <span class="project-tag">Android</span>
+                                <span class="project-tag">Thesis</span>
                             </div>
                             <div class="project-links">
-                                <a href="#" class="project-link">View Live</a>
-                                <a href="#" class="project-link">View Code</a>
+                                <a href="https://github.com/BoaHankokku/Adventure-of-Shan-in-the-Whimperworld" target="_blank" class="project-link">View Code</a>
                             </div>
                         </div>
                     </div>
-
                     <div class="project-card">
                         <div class="project-image">
-                            <div class="project-placeholder">Project 3</div>
+                            <img src="images/project3.gif" alt="Project 3" class="project-gif">
                         </div>
                         <div class="project-content">
-                            <h3 class="project-title">Task Manager App</h3>
+                            <h3 class="project-title">BoaBooth</h3>
                             <p class="project-description">
-                                A productivity app for managing tasks and projects efficiently.
+                               A WordPress-based photo booth system for capturing and customizing photo strips.
                             </p>
                             <div class="project-tags">
-                                <span class="project-tag">Vue.js</span>
-                                <span class="project-tag">Firebase</span>
-                                <span class="project-tag">CSS3</span>
+                                <span class="project-tag">WordPress</span>
+                                <span class="project-tag">PHP</span>
+                                <span class="project-tag">Photo Booth</span>
+                                <span class="project-tag">Web Integration</span>
                             </div>
                             <div class="project-links">
-                                <a href="#" class="project-link">View Live</a>
-                                <a href="#" class="project-link">View Code</a>
+                                <a href="https://github.com/BoaHankokku/boabooth-photobooth" target="_blank" class="project-link">View Code</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-
         <section id="contact" class="contact">
             <div class="container">
                 <h2 class="section-title">Get In Touch</h2>
@@ -376,20 +444,44 @@
                     </div>
                 </div>
                 <div class="social-links">
-                    <a href="#" class="social-link">GitHub</a>
-                    <a href="#" class="social-link">LinkedIn</a>
-                    <a href="#" class="social-link">Twitter</a>
+                    <a href="https://github.com/BoaHankokku" target="_blank" class="social-link">GitHub</a>
+                    <a href="https://www.linkedin.com/in/arnie-dela-victoria-582a62284/" target="_blank" class="social-link">LinkedIn</a>
+                    <a href="https://www.facebook.com/asawa.nichanyeol.315" target="_blank" class="social-link">Facebook</a>
+                    <a href="https://x.com/Only_Boaa" target="_blank" class="social-link">Twitter</a>
                 </div>
             </div>
         </section>
     </main>
 
+    <!-- Custom Success Popup Modal -->
+    <div id="success-popup" class="popup-overlay">
+        <div class="popup-content">
+            <div class="popup-icon">✅</div>
+            <h3>Message Sent Successfully!</h3>
+            <p>Thank you for your message! I'll get back to you soon.</p>
+            <button id="popup-close" class="popup-btn">OK</button>
+        </div>
+    </div>
+
+    <!-- Custom Error Popup Modal -->
+    <div id="error-popup" class="popup-overlay">
+        <div class="popup-content error">
+            <div class="popup-icon">❌</div>
+            <h3>Oops! Something went wrong</h3>
+            <p>Please try again or contact me directly at arnie.delavictoria09@gmail.com</p>
+            <button id="error-popup-close" class="popup-btn">OK</button>
+        </div>
+    </div>
+
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2025 Your Name. All rights reserved.</p>
+            <p>&copy; 2025 Arnie Dela Victoria. All rights reserved.</p>
         </div>
     </footer>
 
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <script src="script.js"></script>
+    <script src="carousel.js"></script>
 </body>
 </html>
